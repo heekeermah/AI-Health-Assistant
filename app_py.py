@@ -18,6 +18,9 @@ import joblib
 model = joblib.load('model.pkl')
 symptom_labels = joblib.load('symptom_labels.pkl')
 
+# Load disease dictionary
+disease_info = pd.read_csv("disease_info.csv")
+
 st.title("AI Health Assistant")
 st.write("Select your symptoms to get a possible diagnosis.")
 
@@ -28,6 +31,17 @@ if st.button("Predict"):
     if not selected_symptoms:
         st.warning("Please select at least one symptom.")
     else:
-        input_data = [1 if symptom in selected_symptoms else 0 for symptom in symptom_labels]
-        prediction = model.predict([input_data])
-        st.success(f"Possible diagnosis: **{prediction[0]}**")
+         # Convert symptoms to input vector
+        input_data = [1 if s in selected_symptoms else 0 for s in symptom_labels]
+        prediction = model.predict([input_data])[0]
+
+        # Display prediction
+        st.success(f"Possible diagnosis: **{prediction}**")
+
+        # Display additional info
+        result = disease_info[disease_info["Disease"].str.lower() == prediction.lower()]
+
+        if not result.empty:
+            st.markdown(f"**Common Symptoms:** {result['Symptoms'].values[0].split(','))}")
+        else:
+            st.info("No additional information available for this disease.")
