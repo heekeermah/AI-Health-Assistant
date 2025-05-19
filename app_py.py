@@ -42,6 +42,6 @@ if st.button("Predict"):
         result = disease_info[disease_info["Disease"].str.lower() == prediction.lower()]
 
         if not result.empty:
-            st.markdown(f"**Common Symptoms:** {result['Symptoms'].values[0].split(','))}")
+            st.markdown(f"**Common Symptoms:** {result['Symptoms'].values[0].split(',')}")
         else:
             st.info("No additional information available for this disease.")
